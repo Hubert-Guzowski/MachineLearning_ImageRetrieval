@@ -1,2 +1,11 @@
 data/
 .ipynb_checkpoints/
+
+# lab6 ignored files
+lab6_DistanceMetricLearning/model.hfs5
+lab6_DistanceMetricLearning/*.png
+lab6_DistanceMetricLearning/*LOG.txt
+lab6_DistanceMetricLearning/object_pose_tf/dataset
+lab6_DistanceMetricLearning/object_pose_tf/histograms
+lab6_DistanceMetricLearning/object_pose_tf/model
+lab6_DistanceMetricLearning/object_pose_tf/*LOG.txt
