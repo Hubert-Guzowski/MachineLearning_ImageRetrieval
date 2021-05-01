@@ -4,7 +4,7 @@ from keras.datasets import mnist
 from keras.datasets import cifar10
 from keras.models import Model
 from keras.layers import Input, Flatten, Dense, Dropout, Lambda, Conv2D
-from keras.layers import MaxPooling2D, BatchNormalization, GlobalAveragePooling2D
+from keras.layers import MaxPooling2D, BatchNormalization, GlobalAveragePooling2D, AveragePooling2D
 from keras.layers import Activation, Concatenate
 from keras import optimizers
 from keras.optimizers import RMSprop
@@ -181,32 +181,18 @@ def create_simple_siamese(input_shape):
 
     return Model(inputs, outputs)
 
-# SIAMESE NEURAL NETWORK - Complex
+# SIAMESE NEURAL NETWORK - Simple 2
 
-WEIGHTS_INITIALIZER = RandomUniform(minval=-1e-2, maxval=1e-2, seed=None)
-BIAS_INITIALIZER = RandomUniform(minval=.5-1e-2, maxval=.5+1e-2, seed=None)
-
-# def create_complex_siamese(input_shape):
-#     inputs = Input(input_shape)
+def create_simple2_siamese(input_shape):
+    inputs = Input(input_shape)
     
-#     x = Conv2D(64, (3, 3), strides=(2, 2), activation='relu',
-#                    kernel_initializer=WEIGHTS_INITIALIZER, kernel_regularizer=l2(2e-4))(inputs)
-#     x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
-#     x = Conv2D(128, (1, 1), activation='relu',
-#                      kernel_initializer=WEIGHTS_INITIALIZER,
-#                      bias_initializer=BIAS_INITIALIZER, kernel_regularizer=l2(2e-4))(x)
-#     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-#     x = Conv2D(128, (1, 1), activation='relu', kernel_initializer=WEIGHTS_INITIALIZER,
-#                      bias_initializer=BIAS_INITIALIZER, kernel_regularizer=l2(2e-4))(x)
-#     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-#     x = Conv2D(256, (1, 1), strides=(1, 1), activation='relu', kernel_initializer=WEIGHTS_INITIALIZER,
-#                      bias_initializer=BIAS_INITIALIZER, kernel_regularizer=l2(2e-4))(x)
-#     x = Flatten()(x)
-#     outputs = Dense(4096, activation='sigmoid',
-#                    kernel_regularizer=l2(1e-3),
-#                    kernel_initializer=WEIGHTS_INITIALIZER,bias_initializer=BIAS_INITIALIZER)(x)
-
-#     return Model(inputs, outputs)
+    x = Conv2D(4, (5,5), activation = 'tanh')(inputs)
+    x = AveragePooling2D(pool_size = (2,2))(x)
+    x = Conv2D(16, (5,5), activation = 'tanh')(x)
+    x = AveragePooling2D(pool_size = (2,2))(x)
+    x = Flatten()(x)
+    outputs = Dense(10, activation = 'tanh')(x)
+    return Model(inputs, outputs)
 
 # ===============================================================================
 
@@ -236,11 +222,11 @@ print("Shape of training labels", tr_y.shape)
 
 squeeze_net = create_squeeze_net(input_shape)
 simple_net = create_simple_siamese(input_shape)
-# complex_net = create_complex_siamese(input_shape)
+simple2_net = create_simple2_siamese(input_shape)
 
 for (net_name, net_model) in [
-    # ('ComplexSiamese', complex_net), 
     ('SimpleSiamese', simple_net), 
+    ('SimpleSiamese2', simple2_net), 
     ('SqueezeNet', squeeze_net)]:
     input_a = Input(shape=input_shape, name='input_a')
     input_b = Input(shape=input_shape, name='input_b')
